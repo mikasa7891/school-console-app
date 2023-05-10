@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.sql.*;
 
 public class SQLTasks {
-    public void createDatabase() throws SQLException {
+    public void createDatabase() {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         DaoFactory daoFactory = DaoFactory.getInstance();
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/SQLTablesCreation"));
              Connection connection = daoFactory.getConnection();
-             Statement statement = connection.createStatement();) {
+             Statement statement = connection.createStatement()) {
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line);
                 stringBuilder.append(System.lineSeparator());
@@ -26,7 +26,7 @@ public class SQLTasks {
         }
     }
 
-    public String findAllGroupsWithLessOrEqualStudentsNumber(int numberOfStudents) throws SQLException {
+    public String findAllGroupsWithLessOrEqualStudentsNumber(int numberOfStudents) {
         String query = """
                 SELECT groups.group_id, groups.group_name, COUNT(students.student_id) AS student_count
                                                                           FROM groups
@@ -49,15 +49,14 @@ public class SQLTasks {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (result.length() == 0) return "No such group in database";
         return result.toString().trim();
     }
 
-    public String findAllStudentsRelatedToTheCourse(String groupName) throws SQLException {
+    public String findAllStudentsRelatedToTheCourse(String groupName) {
         String query = """
                 SELECT s.first_name, s.last_name, g.group_name
                                        FROM students AS s
-                                       JOIN groups AS g\s
+                                       JOIN groups AS g
                                        ON s.group_id = g.group_id
                                        WHERE g.group_name LIKE ?
                 """;
@@ -72,10 +71,10 @@ public class SQLTasks {
                 result.append(resultSet.getString("second_name")).append(" - ");
                 result.append(resultSet.getString("group_name")).append(System.lineSeparator());
             }
-            return result.toString().trim();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return result.length() == 0 ? "There is no such group in database" : result.toString().trim();
     }
 
     public int addStudent(int groupID, String studentName, String studentSurname) {
@@ -84,15 +83,68 @@ public class SQLTasks {
                 VALUES (?,?,?)
                 """;
         DaoFactory daoFactory = DaoFactory.getInstance();
+        int result = 0;
         try (Connection connection = daoFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, groupID);
             statement.setString(2, studentName);
             statement.setString(3, studentSurname);
-            return statement.executeUpdate();
+            result = statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return result;
+    }
+
+    public int deleteStudent(int studentId) {
+        String query = """
+                DELETE FROM students WHERE student_id = ?;
+                """;
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        int result = 0;
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, studentId);
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public int addStudentToTheCourse(int studentId, int courseId) {
+        String query = """
+                INSERT INTO student_courses (student_id, course_id)
+                VALUES ({student_id}, {course_id});
+                """;
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        int result = 0;
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, studentId);
+            statement.setInt(2, courseId);
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public int removeStudentFromTheCourse(int studentId, int courseId) {
+        String query = """
+                DELETE FROM student_courses WHERE student_id = ? AND course_id = ?;
+                """;
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        int result = 0;
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, studentId);
+            statement.setInt(2, courseId);
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
 
