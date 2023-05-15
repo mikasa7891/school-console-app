@@ -1,17 +1,17 @@
-package com.kirylkhrystsenka.schoolapp.domain;
+package com.kirylkhrystsenka.schoolapp.dao.entities;
 
-public class Course {
-    private final int id;
+public class Course implements HasId<Long> {
+    private final Long id;
     private final String name;
     private final String description;
 
-    public Course(int id, String name, String description) {
+    public Course(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

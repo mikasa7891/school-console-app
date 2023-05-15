@@ -16,6 +16,9 @@
         <junit-upiter-api.version>5.9.2</junit-upiter-api.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <mockito-junit-jupiter.version>5.3.1</mockito-junit-jupiter.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <spring-core.version>6.0.9</spring-core.version>
+        <HikariCP.version>5.0.1</HikariCP.version>
     </properties>
 
     <dependencies>
@@ -55,7 +58,28 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-core.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-core.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${HikariCP.version}</version>
         </dependency>
     </dependencies>
 

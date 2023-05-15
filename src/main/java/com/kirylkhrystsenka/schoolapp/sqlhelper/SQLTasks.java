@@ -1,20 +1,31 @@
 package com.kirylkhrystsenka.schoolapp.sqlhelper;
 
-import com.kirylkhrystsenka.schoolapp.dao.DaoFactory;
+import com.kirylkhrystsenka.schoolapp.dao.utilities.DBConfiguration;
+import com.kirylkhrystsenka.schoolapp.dao.utilities.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
+
 public class SQLTasks {
+    private DBUtil dbUtil = null;
+
+    public SQLTasks(){
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DBConfiguration.class);
+        dbUtil = context.getBean("dbUtil", DBUtil.class);
+    }
+
     public void createDatabase() {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
-        DaoFactory daoFactory = DaoFactory.getInstance();
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/SQLTablesCreation"));
-             Connection connection = daoFactory.getConnection();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("C:\\Users\\mikas\\IdeaProjects\\school-console-app\\src\\main\\resources\\drop_db.sql"));
+             Connection connection = dbUtil.getDataSource().getConnection();
              Statement statement = connection.createStatement()) {
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuilder.append(line);
@@ -24,6 +35,31 @@ public class SQLTasks {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("C:\\Users\\mikas\\IdeaProjects\\school-console-app\\src\\main\\resources\\init_scheme.sql"));
+             Connection connection = dbUtil.getDataSource().getConnection();
+             Statement statement = connection.createStatement()) {
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(System.lineSeparator());
+            }
+            statement.executeUpdate(stringBuilder.toString());
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("C:\\Users\\mikas\\IdeaProjects\\school-console-app\\src\\main\\resources\\generate_data.sql"));
+             Connection connection = dbUtil.getDataSource().getConnection();
+             Statement statement = connection.createStatement()) {
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(System.lineSeparator());
+            }
+            statement.executeUpdate(stringBuilder.toString());
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public String findAllGroupsWithLessOrEqualStudentsNumber(int numberOfStudents) {
@@ -36,8 +72,7 @@ public class SQLTasks {
                                                       					ORDER BY groups.group_id;
                 """;
         StringBuilder result = new StringBuilder();
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, numberOfStudents);
             ResultSet resultSet = statement.executeQuery();
@@ -61,8 +96,7 @@ public class SQLTasks {
                                        WHERE g.group_name LIKE ?
                 """;
         StringBuilder result = new StringBuilder();
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, groupName);
             ResultSet resultSet = statement.executeQuery();
@@ -82,9 +116,8 @@ public class SQLTasks {
                 INSERT INTO students(group_id, first_name, last_name)
                 VALUES (?,?,?)
                 """;
-        DaoFactory daoFactory = DaoFactory.getInstance();
         int result = 0;
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, groupID);
             statement.setString(2, studentName);
@@ -100,9 +133,8 @@ public class SQLTasks {
         String query = """
                 DELETE FROM students WHERE student_id = ?;
                 """;
-        DaoFactory daoFactory = DaoFactory.getInstance();
         int result = 0;
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, studentId);
             result = statement.executeUpdate();
@@ -117,9 +149,8 @@ public class SQLTasks {
                 INSERT INTO student_courses (student_id, course_id)
                 VALUES ({student_id}, {course_id});
                 """;
-        DaoFactory daoFactory = DaoFactory.getInstance();
         int result = 0;
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);
@@ -134,9 +165,8 @@ public class SQLTasks {
         String query = """
                 DELETE FROM student_courses WHERE student_id = ? AND course_id = ?;
                 """;
-        DaoFactory daoFactory = DaoFactory.getInstance();
         int result = 0;
-        try (Connection connection = daoFactory.getConnection();
+        try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, studentId);
             statement.setInt(2, courseId);

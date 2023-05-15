@@ -1,21 +1,20 @@
-package com.kirylkhrystsenka.schoolapp.domain;
+package com.kirylkhrystsenka.schoolapp.dao.entities;
 
-public class Student {
-    private final int id;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Group;
+
+public class Student implements HasId<Long>{
+    private final Long id;
     private final Group group;
     private final String firstName;
     private final String lastName;
 
-    public Student(int id, Group group, String firstName, String lastName) {
+    public Student(Long id, Group group, String firstName, String lastName) {
         this.id = id;
         this.group = group;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public Group getGroup() {
         return group;
@@ -27,5 +26,10 @@ public class Student {
 
     public String getLastName() {
         return lastName;
+    }
+
+    @Override
+    public Long getId() {
+        return id;
     }
 }

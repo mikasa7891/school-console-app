@@ -1,34 +1,47 @@
 package com.kirylkhrystsenka.schoolapp.dao.impl;
 
-import com.kirylkhrystsenka.schoolapp.dao.StudentDAO;
-import com.kirylkhrystsenka.schoolapp.domain.Student;
-
-import java.sql.SQLException;
+import com.kirylkhrystsenka.schoolapp.dao.AbstractCrudDao;
+import com.kirylkhrystsenka.schoolapp.dao.GroupDAO;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Course;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Student;
+import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
-public class PostgreSQLStudentDao implements StudentDAO {
+public class PostgreSQLStudentDao extends AbstractCrudDao<Student,Long> implements GroupDAO {
+
     @Override
-    public List<Student> getAllStudents() throws SQLException {
+    protected Student create(Connection connection, Student entity) {
         return null;
     }
 
     @Override
-    public Student getStudentById(int id) throws SQLException {
+    protected Student update(Connection connection, Student entity) {
         return null;
     }
 
     @Override
-    public void addStudent(Student student) throws SQLException {
-
+    public Optional<Course> findById(Connection connection, Long id) {
+        return Optional.empty();
     }
 
     @Override
-    public void updateStudent(Student student) throws SQLException {
-
+    public List<Course> findAll(Connection connection) {
+        return null;
     }
 
     @Override
-    public void deleteStudent(Student student) throws SQLException {
+    public Course save(Connection connection, Course entity) {
+        return null;
+    }
 
+    @Override
+    public void deleteById(Connection connection, Long id) {
+        System.out.println("");
+    }
+
+    @Override
+    public Optional<Course> findByName(Connection connection, String name) {
+        return Optional.empty();
     }
 }

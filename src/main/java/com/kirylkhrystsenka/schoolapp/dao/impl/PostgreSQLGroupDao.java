@@ -1,34 +1,49 @@
 package com.kirylkhrystsenka.schoolapp.dao.impl;
 
+import com.kirylkhrystsenka.schoolapp.dao.AbstractCrudDao;
 import com.kirylkhrystsenka.schoolapp.dao.GroupDAO;
-import com.kirylkhrystsenka.schoolapp.domain.Group;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Course;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Group;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public class PostgreSQLGroupDao implements GroupDAO {
+public class PostgreSQLGroupDao extends AbstractCrudDao<Group,Long> implements GroupDAO {
+
     @Override
-    public List<Group> getAllGroups() throws SQLException {
+    public Optional<Course> findById(Connection connection, Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Course> findAll(Connection connection) {
         return null;
     }
 
     @Override
-    public Group getGroupById(int id) throws SQLException {
+    public Course save(Connection connection, Course entity) {
         return null;
     }
 
     @Override
-    public void addGroup(Group group) throws SQLException {
+    public void deleteById(Connection connection, Long id) {
 
     }
 
     @Override
-    public void updateGroup(Group group) throws SQLException {
-
+    public Optional<Course> findByName(Connection connection, String name) {
+        return Optional.empty();
     }
 
     @Override
-    public void deleteGroup(Group group) throws SQLException {
+    protected Group create(Connection connection, Group entity) {
+        return null;
+    }
 
+    @Override
+    protected Group update(Connection connection, Group entity) {
+        return null;
     }
 }

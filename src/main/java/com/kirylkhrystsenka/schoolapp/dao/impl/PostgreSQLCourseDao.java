@@ -1,34 +1,47 @@
 package com.kirylkhrystsenka.schoolapp.dao.impl;
 
-import com.kirylkhrystsenka.schoolapp.dao.CourseDAO;
-import com.kirylkhrystsenka.schoolapp.domain.Course;
+import com.kirylkhrystsenka.schoolapp.dao.AbstractCrudDao;
+import com.kirylkhrystsenka.schoolapp.dao.CourseDao;
+import com.kirylkhrystsenka.schoolapp.dao.entities.Course;
 
-import java.sql.SQLException;
+import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
-public class PostgreSQLCourseDao implements CourseDAO {
+public class PostgreSQLCourseDao extends AbstractCrudDao<Course,Long> implements CourseDao{
+
     @Override
-    public List<Course> getAllCourses() throws SQLException {
+    public Optional<Course> findByName(Connection connection, String name) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Course> findById(Connection connection, Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Course> findAll(Connection connection) {
         return null;
     }
 
     @Override
-    public Course getCourseById(int id) throws SQLException {
+    public Course save(Connection connection, Course entity) {
+        return entity.getId() == null ? create(connection, entity) : update(connection, entity);
+    }
+
+    @Override
+    public void deleteById(Connection connection, Long id) {
+
+    }
+
+    @Override
+    protected Course create(Connection connection, Course entity) {
         return null;
     }
 
     @Override
-    public void addCourse(Course course) throws SQLException {
-
-    }
-
-    @Override
-    public void updateCourse(Course course) throws SQLException {
-
-    }
-
-    @Override
-    public void deleteCourse(Course course) throws SQLException {
-
+    protected Course update(Connection connection, Course entity) {
+        return null;
     }
 }
