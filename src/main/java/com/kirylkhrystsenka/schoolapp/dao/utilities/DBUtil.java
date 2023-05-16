@@ -1,44 +1,28 @@
 package com.kirylkhrystsenka.schoolapp.dao.utilities;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 
-@Component("dbUtil")
-@Scope("singleton")
-@PropertySource("classpath:db.properties")
 public class DBUtil {
-    private String dbDriver;
-    private String dbUrl;
-    private String dbLogin;
-    private String dbPassword;
-
     private HikariDataSource dataSource;
 
-
-    @Autowired
-    public DBUtil(@Value("${db.driver}")String dbDriver,
-                  @Value("${db.url}") String dbUrl,
-                  @Value("${db.login}") String dbLogin,
-                  @Value("${db.password}") String dbPassword) {
-        this.dbDriver = dbDriver;
-        this.dbUrl = dbUrl;
-        this.dbLogin = dbLogin;
-        this.dbPassword = dbPassword;
+    public DBUtil() {
         initializeDataSource();
     }
 
     private void initializeDataSource() {
+        Properties properties = null;
         try {
+            properties = new Properties(new BufferedReader(new FileReader("C:\\Users\\mikas\\IdeaProjects\\school-console-app\\src\\main\\resources\\db.properties")));
+            properties.setProperties();
+
             dataSource = new HikariDataSource();
-            dataSource.setDriverClassName(dbDriver);
-            dataSource.setJdbcUrl(dbUrl);
-            dataSource.setUsername(dbLogin);
-            dataSource.setPassword(dbPassword);
+
+            dataSource.setJdbcUrl(properties.getBDUrl());
+            dataSource.setUsername(properties.getDbUsername());
+            dataSource.setPassword(properties.getDbPassword());
         } catch (Exception e) {
             e.printStackTrace();
         }

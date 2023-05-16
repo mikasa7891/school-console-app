@@ -1,10 +1,7 @@
 package com.kirylkhrystsenka.schoolapp.sqlhelper;
 
-import com.kirylkhrystsenka.schoolapp.dao.utilities.DBConfiguration;
 import com.kirylkhrystsenka.schoolapp.dao.utilities.DBUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,11 +10,9 @@ import java.sql.*;
 
 
 public class SQLTasks {
-    private DBUtil dbUtil = null;
-
+    private final DBUtil dbUtil;
     public SQLTasks(){
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DBConfiguration.class);
-        dbUtil = context.getBean("dbUtil", DBUtil.class);
+        dbUtil = new DBUtil();
     }
 
     public void createDatabase() {
@@ -102,7 +97,7 @@ public class SQLTasks {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 result.append(resultSet.getString("first_name")).append(" - ");
-                result.append(resultSet.getString("second_name")).append(" - ");
+                result.append(resultSet.getString("last_name")).append(" - ");
                 result.append(resultSet.getString("group_name")).append(System.lineSeparator());
             }
         } catch (SQLException e) {
@@ -131,12 +126,14 @@ public class SQLTasks {
 
     public int deleteStudent(int studentId) {
         String query = """
+                DELETE FROM student_courses WHERE student_id = ?;
                 DELETE FROM students WHERE student_id = ?;
                 """;
         int result = 0;
         try (Connection connection = dbUtil.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, studentId);
+            statement.setInt(2,studentId);
             result = statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
