@@ -1,6 +1,5 @@
 package com.kirylkhrystsenka.schoolapp.dao.entities;
 
-import com.kirylkhrystsenka.schoolapp.dao.entities.Group;
 
 public class Student implements HasId<Long>{
     private final Long id;
@@ -31,5 +30,15 @@ public class Student implements HasId<Long>{
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+               "id=" + id +
+               ", group=" + group +
+               ", firstName='" + firstName + '\'' +
+               ", lastName='" + lastName + '\'' +
+               '}';
     }
 }

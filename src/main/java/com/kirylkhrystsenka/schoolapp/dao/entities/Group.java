@@ -18,4 +18,12 @@ public class Group implements HasId<Long>{
     public Long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+               "id=" + id +
+               ", name='" + name + '\'' +
+               '}';
+    }
 }

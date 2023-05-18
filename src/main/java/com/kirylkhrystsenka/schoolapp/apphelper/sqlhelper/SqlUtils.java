@@ -1,5 +1,8 @@
 package com.kirylkhrystsenka.schoolapp.apphelper.sqlhelper;
 
+import com.kirylkhrystsenka.schoolapp.dao.entities.Group;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,4 +38,21 @@ public class SqlUtils {
         }
         return result;
     }
+    public static <T> T withTransaction(HikariDataSource dataSource, UnsafeFunction<Connection, T> function) throws SQLException {
+        T result = null;
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                result = function.apply(connection);
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw new SQLException(e);
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        }
+        return result;
+    }
+
 }
